@@ -1,0 +1,179 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Terminal-specific styles */
+@layer base {
+  body {
+    background-color: #000000;
+    color: #00ff00;
+    font-family: 'IBM Plex Mono', monospace;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    background-color: #000000;
+  }
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+@layer components {
+  .terminal-container {
+    min-height: 100vh;
+    background-color: #000000;
+    color: #00ff00;
+    font-family: 'IBM Plex Mono', monospace;
+    padding: 16px;
+  }
+
+  .terminal-header {
+    margin-bottom: 32px;
+  }
+
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .left-section {
+    flex: 1;
+  }
+
+  .right-section {
+    display: none;
+  }
+
+  @media (min-width: 1024px) {
+    .right-section {
+      display: block;
+      margin-left: 32px;
+    }
+  }
+
+  .ascii-art {
+    color: #00ff00;
+    font-size: 12px;
+    line-height: 1.2;
+    font-family: 'IBM Plex Mono', monospace;
+    margin-bottom: 16px;
+  }
+
+  .decorative-art {
+    color: #00ff00;
+    font-size: 12px;
+    opacity: 0.6;
+    font-family: 'IBM Plex Mono', monospace;
+    line-height: 1.2;
+  }
+
+  .welcome-message {
+    color: #00ff00;
+    margin-bottom: 24px;
+  }
+
+  .welcome-message h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .welcome-message p {
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+
+  .help-text {
+    color: #ffff00;
+    font-weight: 600;
+  }
+
+  .link-text {
+    color: #0066ff;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .terminal-output-container {
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .terminal-output {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .command-block {
+    margin-bottom: 16px;
+  }
+
+  .command-input-line {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .terminal-prompt {
+    color: #00ff00;
+    margin-right: 8px;
+    font-weight: 600;
+  }
+
+  .command-text {
+    color: #00ff00;
+  }
+
+  .command-output {
+    margin-left: 16px;
+    margin-bottom: 16px;
+  }
+
+  .output-text {
+    color: #00ff00;
+    white-space: pre-wrap;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .terminal-input-container {
+    display: flex;
+    align-items: center;
+  }
+
+  .terminal-input {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    color: #00ff00;
+    font-family: 'IBM Plex Mono', monospace;
+    flex: 1;
+    margin-left: 8px;
+  }
+
+  .terminal-cursor {
+    color: #00ff00;
+    margin-left: 4px;
+    animation: blink 1s infinite;
+  }
+
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .ascii-art {
+      font-size: 10px;
+    }
+    
+    .terminal-container {
+      padding: 8px;
+    }
+
+    .right-section {
+      display: none;
+    }
+  }
+}
