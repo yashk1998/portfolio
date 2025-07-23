@@ -462,6 +462,35 @@ export function Terminal() {
           0%, 50% { opacity: 1; }
           51%, 100% { opacity: 0; }
         }
+        
+        /* Hide scrollbars for all browsers */
+        .terminal-container {
+          scrollbar-width: none; /* Firefox */
+          -ms-overflow-style: none; /* Internet Explorer 10+ */
+        }
+        
+        .terminal-container::-webkit-scrollbar {
+          display: none; /* Chrome, Safari, Opera */
+        }
+        
+        .terminal-output-container {
+          scrollbar-width: none; /* Firefox */
+          -ms-overflow-style: none; /* Internet Explorer 10+ */
+        }
+        
+        .terminal-output-container::-webkit-scrollbar {
+          display: none; /* Chrome, Safari, Opera */
+        }
+        
+        /* Hide scrollbars on any child elements that might scroll */
+        .terminal-container * {
+          scrollbar-width: none; /* Firefox */
+          -ms-overflow-style: none; /* Internet Explorer 10+ */
+        }
+        
+        .terminal-container *::-webkit-scrollbar {
+          display: none; /* Chrome, Safari, Opera */
+        }
       `}</style>
     </div>
   );
