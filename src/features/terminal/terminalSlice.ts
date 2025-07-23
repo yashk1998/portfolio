@@ -21,12 +21,21 @@ export interface TerminalState {
   selectedSocialIndex: number;
 }
 
+// Get theme from localStorage or default to green-goblin
+const getInitialTheme = (): string => {
+  if (typeof window !== 'undefined') {
+    const savedTheme = localStorage.getItem('terminal-theme');
+    return savedTheme || 'green-goblin';
+  }
+  return 'green-goblin';
+};
+
 const initialState: TerminalState = {
   commands: [],
   commandHistory: [],
   historyIndex: 0,
   currentInput: '',
-  theme: 'green-goblin',
+  theme: getInitialTheme(),
   isTyping: false,
   showCursor: true,
   showThemeSelector: false,
@@ -57,6 +66,10 @@ const terminalSlice = createSlice({
     },
     setTheme: (state, action: PayloadAction<string>) => {
       state.theme = action.payload;
+      // Save theme to localStorage
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('terminal-theme', action.payload);
+      }
     },
     setIsTyping: (state, action: PayloadAction<boolean>) => {
       state.isTyping = action.payload;

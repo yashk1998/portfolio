@@ -8,8 +8,6 @@
 /* stylelint-enable at-rule-no-unknown */
 
 /* Essential global styles only */
-
-/* Terminal-specific styles */
 @layer base {
   body {
     background-color: #000000;

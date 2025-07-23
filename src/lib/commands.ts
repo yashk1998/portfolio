@@ -6,6 +6,12 @@ export interface CommandHandler {
   description: string;
 }
 
+export const availableCommands = [
+  'help', 'about', 'skills', 'projects', 'experience', 
+  'contact', 'resume', 'blog', 'socials', 'themes', 
+  'ai-chat', 'clear', 'whoami'
+];
+
 export const commandHandlers: Record<string, CommandHandler> = {
   help: {
     execute: async () => {
@@ -23,6 +29,7 @@ Available commands:
 • ai-chat   - AI assistant
 • clear     - Clear terminal
 • help      - Show this help
+• whoami    - Show current user
 
 Type any command to get started!
       `.trim();
@@ -162,6 +169,21 @@ Visit: yashkhivasara.ghost.org for full articles
       return 'CLEAR'; // Special command to clear terminal
     },
     description: 'Clear terminal',
+  },
+
+  whoami: {
+    execute: async () => {
+      // Check if we're in a browser environment
+      if (typeof window !== 'undefined') {
+        // In browser, we can't get the actual IP, so we'll return visitor
+        // In a real implementation, you'd need server-side logic to get the actual IP
+        return 'visitor';
+      }
+      
+      // For server-side or when IP detection is available
+      return 'visitor';
+    },
+    description: 'Show current user',
   },
 };
 

@@ -20,7 +20,7 @@ import { getCurrentTheme, getThemeNames } from '@/lib/themes';
 const availableCommands = [
   'help', 'about', 'skills', 'projects', 'experience', 
   'contact', 'resume', 'blog', 'socials', 'themes', 
-  'ai-chat', 'clear'
+  'ai-chat', 'clear', 'whoami'
 ];
 
 export function Terminal() {
