@@ -56,20 +56,29 @@
     }
   }
 
+  /* UPDATED: Fixed ASCII art to prevent scrollbars */
   .ascii-art {
     color: #00ff00;
-    font-size: 12px;
+    font-size: clamp(6px, 1.2vw, 12px); /* Responsive font size */
     line-height: 1.2;
     font-family: 'IBM Plex Mono', monospace;
     margin-bottom: 16px;
+    overflow: hidden; /* Prevent horizontal scrolling */
+    white-space: pre; /* Preserve formatting */
+    text-align: center; /* Center the art */
+    transform-origin: center top; /* Set transform origin */
   }
 
+  /* UPDATED: Fixed decorative art too */
   .decorative-art {
     color: #00ff00;
-    font-size: 12px;
+    font-size: clamp(6px, 1.2vw, 12px); /* Responsive font size */
     opacity: 0.6;
     font-family: 'IBM Plex Mono', monospace;
     line-height: 1.2;
+    overflow: hidden; /* Prevent horizontal scrolling */
+    white-space: pre; /* Preserve formatting */
+    text-align: center; /* Center the art */
   }
 
   .welcome-message {
@@ -162,10 +171,15 @@
     animation: blink 1s infinite;
   }
 
-  /* Responsive design */
+  /* UPDATED: Better responsive design for ASCII art */
   @media (max-width: 768px) {
     .ascii-art {
-      font-size: 10px;
+      font-size: clamp(4px, 2vw, 8px); /* Smaller on mobile */
+      transform: scale(0.9); /* Slight scale down on mobile if needed */
+    }
+    
+    .decorative-art {
+      font-size: clamp(4px, 2vw, 8px); /* Smaller on mobile */
     }
     
     .terminal-container {
@@ -174,6 +188,18 @@
 
     .right-section {
       display: none;
+    }
+  }
+
+  /* ADDITIONAL: Extra small screens */
+  @media (max-width: 480px) {
+    .ascii-art {
+      font-size: clamp(3px, 2.5vw, 6px);
+      transform: scale(0.8);
+    }
+    
+    .decorative-art {
+      font-size: clamp(3px, 2.5vw, 6px);
     }
   }
 }

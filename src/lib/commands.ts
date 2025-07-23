@@ -1,4 +1,5 @@
 import { Command } from '@/features/terminal/terminalSlice';
+import { getThemeNames } from './themes';
 
 export interface CommandHandler {
   execute: (args: string[]) => Promise<string>;
@@ -17,7 +18,8 @@ Available commands:
 • contact   - Get in touch
 • resume    - Download resume
 • blog      - View blog posts
-• theme     - Change terminal theme
+• socials   - Social media links
+• themes    - Change terminal theme
 • ai-chat   - AI assistant
 • clear     - Clear terminal
 • help      - Show this help
@@ -31,7 +33,7 @@ Type any command to get started!
   about: {
     execute: async () => {
       return `
-Hello! I'm Yash Khivasara, a passionate developer who loves creating innovative solutions.
+Hello! I'm Yash Khivasara, a passionate full-stack builder who loves creating innovative solutions.
 I specialize in modern web technologies and enjoy building interactive experiences.
 This terminal portfolio showcases my skills, projects, and journey in tech.
 
@@ -92,10 +94,10 @@ Education:
     execute: async () => {
       return `
 Get in Touch:
-• Email: yash.khivasara@example.com
-• GitHub: github.com/yashkhivasara
+• Email: yash.khivasara@gmail.com
+• GitHub: github.com/yashk1998
 • LinkedIn: linkedin.com/in/yashkhivasara
-• Twitter: @yashkhivasara
+• Twitter: @k2_yash
 
 Feel free to reach out for collaborations or opportunities!
       `.trim();
@@ -129,20 +131,16 @@ Visit: yashkhivasara.ghost.org for full articles
     description: 'View blog posts',
   },
   
-  theme: {
-    execute: async (args) => {
-      const themes = ['classic', 'modern', 'cyberpunk'];
-      const theme = args[0];
-      
-      if (!theme) {
-        return `Available themes: ${themes.join(', ')}\nUsage: theme <theme-name>`;
-      }
-      
-      if (!themes.includes(theme)) {
-        return `Invalid theme. Available themes: ${themes.join(', ')}`;
-      }
-      
-      return `Theme changed to: ${theme}`;
+  socials: {
+    execute: async () => {
+      return 'SOCIALS_MENU'; // Special command to show socials menu
+    },
+    description: 'Social media links',
+  },
+  
+  themes: {
+    execute: async () => {
+      return 'THEMES_MENU'; // Special command to show themes menu
     },
     description: 'Change terminal theme',
   },

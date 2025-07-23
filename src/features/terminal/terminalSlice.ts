@@ -12,9 +12,13 @@ export interface TerminalState {
   commandHistory: string[];
   historyIndex: number;
   currentInput: string;
-  theme: 'classic' | 'modern' | 'cyberpunk';
+  theme: string;
   isTyping: boolean;
   showCursor: boolean;
+  showThemeSelector: boolean;
+  selectedThemeIndex: number;
+  showSocials: boolean;
+  selectedSocialIndex: number;
 }
 
 const initialState: TerminalState = {
@@ -22,9 +26,13 @@ const initialState: TerminalState = {
   commandHistory: [],
   historyIndex: 0,
   currentInput: '',
-  theme: 'classic',
+  theme: 'green-goblin',
   isTyping: false,
   showCursor: true,
+  showThemeSelector: false,
+  selectedThemeIndex: 0,
+  showSocials: false,
+  selectedSocialIndex: 0,
 };
 
 const terminalSlice = createSlice({
@@ -47,7 +55,7 @@ const terminalSlice = createSlice({
     setHistoryIndex: (state, action: PayloadAction<number>) => {
       state.historyIndex = action.payload;
     },
-    setTheme: (state, action: PayloadAction<TerminalState['theme']>) => {
+    setTheme: (state, action: PayloadAction<string>) => {
       state.theme = action.payload;
     },
     setIsTyping: (state, action: PayloadAction<boolean>) => {
@@ -55,6 +63,40 @@ const terminalSlice = createSlice({
     },
     setShowCursor: (state, action: PayloadAction<boolean>) => {
       state.showCursor = action.payload;
+    },
+    setShowThemeSelector: (state, action: PayloadAction<boolean>) => {
+      state.showThemeSelector = action.payload;
+      if (action.payload) {
+        state.selectedThemeIndex = 0;
+      }
+    },
+    setSelectedThemeIndex: (state, action: PayloadAction<number>) => {
+      state.selectedThemeIndex = action.payload;
+    },
+    setShowSocials: (state, action: PayloadAction<boolean>) => {
+      state.showSocials = action.payload;
+      if (action.payload) {
+        state.selectedSocialIndex = 0;
+      }
+    },
+    setSelectedSocialIndex: (state, action: PayloadAction<number>) => {
+      state.selectedSocialIndex = action.payload;
+    },
+    navigateHistoryUp: (state) => {
+      if (state.historyIndex > 0) {
+        state.historyIndex--;
+        state.currentInput = state.commandHistory[state.historyIndex];
+      }
+    },
+    navigateHistoryDown: (state) => {
+      if (state.historyIndex < state.commandHistory.length) {
+        state.historyIndex++;
+        if (state.historyIndex === state.commandHistory.length) {
+          state.currentInput = '';
+        } else {
+          state.currentInput = state.commandHistory[state.historyIndex];
+        }
+      }
     },
   },
 });
@@ -67,6 +109,12 @@ export const {
   setTheme,
   setIsTyping,
   setShowCursor,
+  setShowThemeSelector,
+  setSelectedThemeIndex,
+  setShowSocials,
+  setSelectedSocialIndex,
+  navigateHistoryUp,
+  navigateHistoryDown,
 } = terminalSlice.actions;
 
 export default terminalSlice.reducer; 

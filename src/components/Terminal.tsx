@@ -1,21 +1,51 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/lib/store';
+import {
+  setCurrentInput,
+  addCommand,
+  clearCommands,
+  setShowThemeSelector,
+  setShowSocials,
+  setSelectedThemeIndex,
+  setSelectedSocialIndex,
+  setTheme,
+  navigateHistoryUp,
+  navigateHistoryDown,
+} from '@/features/terminal/terminalSlice';
+import { executeCommand } from '@/lib/commands';
+import { getCurrentTheme, getThemeNames } from '@/lib/themes';
+
+const availableCommands = [
+  'help', 'about', 'skills', 'projects', 'experience', 
+  'contact', 'resume', 'blog', 'socials', 'themes', 
+  'ai-chat', 'clear'
+];
 
 export function Terminal() {
-  const [input, setInput] = useState('');
-  const [commands, setCommands] = useState<Array<{input: string, output: string}>>([]);
-  const [showSocials, setShowSocials] = useState(false);
-  const [selectedSocial, setSelectedSocial] = useState(0);
+  const dispatch = useDispatch();
+  const {
+    commands,
+    currentInput,
+    theme,
+    showThemeSelector,
+    selectedThemeIndex,
+    showSocials,
+    selectedSocialIndex,
+  } = useSelector((state: RootState) => state.terminal);
+
   const inputRef = useRef<HTMLInputElement>(null);
+  const currentTheme = getCurrentTheme(theme);
 
   useEffect(() => {
-    if (inputRef.current) {
+    if (inputRef.current && !showThemeSelector && !showSocials) {
       inputRef.current.focus();
     }
-  }, []);
+  }, [showThemeSelector, showSocials]);
 
   const handleClick = () => {
-    if (inputRef.current) {
+    if (inputRef.current && !showThemeSelector && !showSocials) {
       inputRef.current.focus();
     }
   };
@@ -27,146 +57,153 @@ export function Terminal() {
     { name: 'Instagram', url: 'https://www.instagram.com/yash_k2/', icon: '📷' }
   ];
 
-  const handleSocialsKeyDown = (e: React.KeyboardEvent) => {
+  const handleGlobalKeyDown = (e: KeyboardEvent) => {
+    // Theme selector navigation
+    if (showThemeSelector) {
+      switch (e.key) {
+        case 'ArrowDown':
+          e.preventDefault();
+          const themeNames = getThemeNames();
+          dispatch(setSelectedThemeIndex((selectedThemeIndex + 1) % themeNames.length));
+          break;
+        case 'ArrowUp':
+          e.preventDefault();
+          const themes = getThemeNames();
+          dispatch(setSelectedThemeIndex((selectedThemeIndex - 1 + themes.length) % themes.length));
+          break;
+        case 'Enter':
+          e.preventDefault();
+          const availableThemes = getThemeNames();
+          const selectedTheme = availableThemes[selectedThemeIndex];
+          dispatch(setTheme(selectedTheme));
+          dispatch(setShowThemeSelector(false));
+          break;
+        case 'Escape':
+          e.preventDefault();
+          dispatch(setShowThemeSelector(false));
+          break;
+      }
+      return;
+    }
+
+    // Socials navigation
     if (showSocials) {
       switch (e.key) {
         case 'ArrowDown':
           e.preventDefault();
-          setSelectedSocial((prev) => (prev + 1) % socials.length);
+          dispatch(setSelectedSocialIndex((selectedSocialIndex + 1) % 4));
           break;
         case 'ArrowUp':
           e.preventDefault();
-          setSelectedSocial((prev) => (prev - 1 + socials.length) % socials.length);
+          dispatch(setSelectedSocialIndex((selectedSocialIndex - 1 + 4) % 4));
           break;
         case 'Enter':
           e.preventDefault();
-          window.open(socials[selectedSocial].url, '_blank');
-          setShowSocials(false);
+          window.open(socials[selectedSocialIndex].url, '_blank');
+          dispatch(setShowSocials(false));
           break;
         case 'Escape':
           e.preventDefault();
-          setShowSocials(false);
+          dispatch(setShowSocials(false));
           break;
+      }
+      return;
+    }
+
+    // Don't handle shortcuts when typing in input
+    if (e.target instanceof HTMLInputElement) {
+      return;
+    }
+
+    // Ctrl + l: Clear terminal
+    if (e.ctrlKey && e.key === 'l') {
+      e.preventDefault();
+      dispatch(clearCommands());
+      dispatch(setShowThemeSelector(false));
+      dispatch(setShowSocials(false));
+    }
+
+    // Ctrl + k: Clear current line
+    if (e.ctrlKey && e.key === 'k') {
+      e.preventDefault();
+      dispatch(setCurrentInput(''));
+    }
+
+    // Tab or Ctrl + i: Autocomplete
+    if (e.key === 'Tab' || (e.ctrlKey && e.key === 'i')) {
+      e.preventDefault();
+      const input = currentInput.trim().toLowerCase();
+      if (input) {
+        const matchingCommand = availableCommands.find(cmd => 
+          cmd.startsWith(input)
+        );
+        if (matchingCommand) {
+          dispatch(setCurrentInput(matchingCommand));
+        }
+      }
+    }
+
+    // General navigation (only when not in menus)
+    if (!showThemeSelector && !showSocials) {
+      // Up Arrow: Navigate history up
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        dispatch(navigateHistoryUp());
+      }
+
+      // Down Arrow: Navigate history down
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        dispatch(navigateHistoryDown());
       }
     }
   };
 
-  const executeCommand = (cmd: string) => {
-    const trimmedCmd = cmd.trim().toLowerCase();
-    
-    switch (trimmedCmd) {
-      case 'help':
-        return `
-Available commands:
-• about     - Personal introduction
-• skills    - Technical skills and technologies
-• projects  - Showcase of projects
-• experience - Work history and timeline
-• contact   - Get in touch
-• resume    - Download resume
-• blog      - View blog posts
-• socials   - Social media links
-• theme     - Change terminal theme
-• ai-chat   - AI assistant
-• clear     - Clear terminal
-• help      - Show this help
-
-Type any command to get started!
-        `.trim();
-      
-      case 'about':
-        return `
-Hello! I'm Yash Khivasara, a passionate full-stack builder who loves creating innovative solutions.
-I specialize in modern web technologies and enjoy building interactive experiences.
-This terminal portfolio showcases my skills, projects, and journey in tech.
-
-I believe in clean code, user experience, and continuous learning.
-        `.trim();
-      
-      case 'skills':
-        return `
-Technical Skills:
-• Frontend: React, Next.js, TypeScript, Tailwind CSS, Vue.js
-• Backend: Node.js, Python, Java, APIs, Microservices
-• Database: PostgreSQL, MongoDB, Redis, Supabase
-• DevOps: Docker, AWS, Azure, CI/CD, Kubernetes
-• Tools: Git, VS Code, Figma, Postman
-• Cloud: AWS, Azure, Google Cloud Platform
-        `.trim();
-      
-      case 'projects':
-        return `
-Featured Projects:
-• Terminal Portfolio (Current) - Interactive terminal-style portfolio
-• E-commerce Platform - Full-stack React + Node.js application
-• AI Chat Application - Real-time chat with OpenAI integration
-• Task Management System - Vue.js + Firebase project
-• Weather Dashboard - React + OpenWeather API
-
-More projects available at: github.com/yashkhivasara
-        `.trim();
-      
-      case 'experience':
-        return `
-Work Experience:
-• Senior Full Stack Developer (2023-Present) - Tech Company
-• Full Stack Developer (2021-2023) - Startup Inc.
-• Junior Developer (2019-2021) - Digital Agency
-
-Education:
-• Bachelor's in Computer Science
-• Certifications: AWS, Azure, Google Cloud
-        `.trim();
-      
-      case 'contact':
-        return `
-Get in Touch:
-• Email: yash.khivasara@gmail.com
-• GitHub: github.com/yashk1998
-• LinkedIn: linkedin.com/in/yashkhivasara
-• Twitter: @k2_yash
-
-Feel free to reach out for collaborations or opportunities!
-        `.trim();
-      
-      case 'socials':
-        setShowSocials(true);
-        setSelectedSocial(0);
-        return 'SOCIALS_MENU';
-      
-      case 'clear':
-        return 'CLEAR';
-      
-      default:
-        return `Command not found: ${trimmedCmd}\nType 'help' to see available commands.`;
-    }
-  };
+  useEffect(() => {
+    document.addEventListener('keydown', handleGlobalKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleGlobalKeyDown);
+    };
+  }, [showThemeSelector, selectedThemeIndex, showSocials, selectedSocialIndex, currentInput]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       e.preventDefault();
-      const command = input.trim();
+      const command = currentInput.trim();
       if (command) {
-        const output = executeCommand(command);
-        if (output === 'CLEAR') {
-          setCommands([]);
-          setShowSocials(false);
-        } else if (output === 'SOCIALS_MENU') {
-          setCommands([...commands, { input: command, output: '' }]);
-        } else {
-          setCommands([...commands, { input: command, output }]);
-        }
-        setInput('');
+        const result = executeCommand(command);
+        result.then((cmd) => {
+          if (cmd.output === 'CLEAR') {
+            dispatch(clearCommands());
+            dispatch(setShowThemeSelector(false));
+            dispatch(setShowSocials(false));
+          } else if (cmd.output === 'THEMES_MENU') {
+            // Don't add the command to history, just show the menu
+            dispatch(setShowThemeSelector(true));
+            dispatch(setSelectedThemeIndex(0));
+          } else if (cmd.output === 'SOCIALS_MENU') {
+            // Don't add the command to history, just show the menu
+            dispatch(setShowSocials(true));
+            dispatch(setSelectedSocialIndex(0));
+          } else {
+            dispatch(addCommand(cmd));
+          }
+        });
+        dispatch(setCurrentInput(''));
       }
     }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(setCurrentInput(e.target.value));
   };
 
   return (
     <div 
       className="terminal-container" 
       style={{ 
-        backgroundColor: '#000000', 
-        color: '#00ff00', 
+        backgroundColor: currentTheme.backgroundColor, 
+        color: currentTheme.textColor, 
         fontFamily: 'IBM Plex Mono, monospace',
         minHeight: '100vh',
         padding: '16px',
@@ -174,12 +211,20 @@ Feel free to reach out for collaborations or opportunities!
         wordWrap: 'break-word',
         whiteSpace: 'pre-wrap'
       }}
-      onKeyDown={handleSocialsKeyDown}
       onClick={handleClick}
       tabIndex={0}
     >
       <div className="terminal-header">
-        <pre className="ascii-art" style={{ color: '#00ff00', fontSize: '14px', lineHeight: '1.2', fontFamily: 'IBM Plex Mono, monospace', textAlign: 'center', overflowX: 'hidden', wordWrap: 'break-word', whiteSpace: 'pre-wrap' }}>
+        <pre className="ascii-art" style={{ 
+          color: currentTheme.asciiArtColor, 
+          fontSize: '14px', 
+          lineHeight: '1.2', 
+          fontFamily: 'IBM Plex Mono, monospace', 
+          textAlign: 'center', 
+          overflowX: 'hidden', 
+          wordWrap: 'break-word', 
+          whiteSpace: 'pre-wrap' 
+        }}>
 {`
 ██╗   ██╗ █████╗ ███████╗██╗  ██╗    ██╗  ██╗██╗  ██╗██╗██╗   ██╗ █████╗ ███████╗ █████╗ ██████╗  █████╗
 ╚██╗ ██╔╝██╔══██╗██╔════╝██║  ██║    ██║ ██╔╝██║  ██║██║██║   ██║██╔══██╗██╔════╝██╔══██╗██╔══██╗██╔══██╗
@@ -190,7 +235,17 @@ Feel free to reach out for collaborations or opportunities!
 `}
         </pre>
         
-        <pre className="ascii-art" style={{ color: '#00ff00', fontSize: '8px', lineHeight: '1.0', fontFamily: 'IBM Plex Mono, monospace', textAlign: 'center', marginTop: '16px', overflowX: 'hidden', wordWrap: 'break-word', whiteSpace: 'pre-wrap' }}>
+        <pre className="ascii-art" style={{ 
+          color: currentTheme.asciiArtColor, 
+          fontSize: '8px', 
+          lineHeight: '1.0', 
+          fontFamily: 'IBM Plex Mono, monospace', 
+          textAlign: 'center', 
+          marginTop: '16px', 
+          overflowX: 'hidden', 
+          wordWrap: 'break-word', 
+          whiteSpace: 'pre-wrap' 
+        }}>
 {`
                                                                                                     
                                                                                                     
@@ -268,10 +323,10 @@ Feel free to reach out for collaborations or opportunities!
 `}
         </pre>
         
-        <div className="welcome-message" style={{ color: '#00ff00', marginBottom: '24px' }}>
+        <div className="welcome-message" style={{ color: currentTheme.welcomeTextColor, marginBottom: '24px' }}>
           <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '8px' }}>Welcome to my terminal portfolio.</h3>
-          <p style={{ fontSize: '14px', marginBottom: '4px' }}>This project's source code can be seen in this project's <span style={{ color: '#0066ff', textDecoration: 'underline' }}>GitHub repo</span>.</p>
-          <p style={{ fontSize: '14px', marginBottom: '4px' }}>For a list of available commands, type <span style={{ color: '#ffff00', fontWeight: '600' }}>help</span>.</p>
+          <p style={{ fontSize: '14px', marginBottom: '4px' }}>This project's source code can be seen in this project's <span style={{ color: currentTheme.linkColor, textDecoration: 'underline' }}>GitHub repo</span>.</p>
+          <p style={{ fontSize: '14px', marginBottom: '4px' }}>For a list of available commands, type <span style={{ color: currentTheme.highlightColor, fontWeight: '600' }}>help</span>.</p>
         </div>
       </div>
       
@@ -279,12 +334,21 @@ Feel free to reach out for collaborations or opportunities!
         {commands.map((cmd, index) => (
           <div key={index} style={{ marginBottom: '16px', overflowX: 'hidden' }}>
             <div style={{ display: 'flex', alignItems: 'flex-start', marginBottom: '8px', flexWrap: 'wrap', overflowX: 'hidden' }}>
-              <span style={{ color: '#00ff00', marginRight: '8px', fontWeight: '600', flexShrink: '0' }}>terminal@yashkhivasara.dev:~$</span>
-              <span style={{ color: '#00ff00', fontSize: '14px', wordBreak: 'break-all' }}>{cmd.input}</span>
+              <span style={{ color: currentTheme.promptColor, marginRight: '8px', fontWeight: '600', flexShrink: '0' }}>terminal@yashkhivasara.dev:~$</span>
+              <span style={{ color: currentTheme.textColor, fontSize: '14px', wordBreak: 'break-all' }}>{cmd.input}</span>
             </div>
             {cmd.output && (
               <div style={{ marginLeft: '16px', marginBottom: '16px', overflowX: 'hidden' }}>
-                <pre style={{ color: '#00ff00', whiteSpace: 'pre-wrap', fontFamily: 'IBM Plex Mono, monospace', fontSize: '14px', lineHeight: '1.4', wordWrap: 'break-word', overflowX: 'hidden', wordBreak: 'break-all' }}>{cmd.output}</pre>
+                <pre style={{ 
+                  color: currentTheme.textColor, 
+                  whiteSpace: 'pre-wrap', 
+                  fontFamily: 'IBM Plex Mono, monospace', 
+                  fontSize: '14px', 
+                  lineHeight: '1.4', 
+                  wordWrap: 'break-word', 
+                  overflowX: 'hidden', 
+                  wordBreak: 'break-all' 
+                }}>{cmd.output}</pre>
               </div>
             )}
           </div>
@@ -292,7 +356,7 @@ Feel free to reach out for collaborations or opportunities!
         
         {showSocials && (
           <div style={{ marginLeft: '16px', marginBottom: '16px', overflowX: 'hidden' }}>
-            <div style={{ color: '#00ff00', fontSize: '14px', marginBottom: '12px' }}>
+            <div style={{ color: currentTheme.textColor, fontSize: '14px', marginBottom: '12px' }}>
               <strong>Social Media Links:</strong>
             </div>
             <div style={{ marginLeft: '16px', overflowX: 'hidden' }}>
@@ -304,8 +368,8 @@ Feel free to reach out for collaborations or opportunities!
                     alignItems: 'center',
                     marginBottom: '8px',
                     padding: '4px 8px',
-                    backgroundColor: selectedSocial === index ? '#00ff00' : 'transparent',
-                    color: selectedSocial === index ? '#000000' : '#00ff00',
+                    backgroundColor: selectedSocialIndex === index ? currentTheme.selectionColor : 'transparent',
+                    color: selectedSocialIndex === index ? currentTheme.backgroundColor : currentTheme.textColor,
                     borderRadius: '4px',
                     cursor: 'pointer',
                     flexWrap: 'wrap'
@@ -313,48 +377,84 @@ Feel free to reach out for collaborations or opportunities!
                 >
                   <span style={{ marginRight: '8px', fontSize: '16px' }}>{social.icon}</span>
                   <span style={{ fontSize: '14px', wordBreak: 'break-all' }}>{social.name}</span>
-                  {selectedSocial === index && (
+                  {selectedSocialIndex === index && (
                     <span style={{ marginLeft: '8px', fontSize: '12px' }}>← Press Enter to open</span>
                   )}
                 </div>
               ))}
             </div>
-            <div style={{ color: '#00ff00', fontSize: '12px', marginTop: '8px', fontStyle: 'italic' }}>
+            <div style={{ color: currentTheme.textColor, fontSize: '12px', marginTop: '8px', fontStyle: 'italic' }}>
               Use ↑↓ arrows to navigate, Enter to open, Esc to exit
             </div>
           </div>
         )}
+
+        {showThemeSelector && (
+          <div style={{ marginLeft: '16px', marginBottom: '16px', overflowX: 'hidden' }}>
+            <div style={{ color: currentTheme.textColor, fontSize: '14px', marginBottom: '12px' }}>
+              <strong>Available Themes:</strong>
+            </div>
+            <div style={{ marginLeft: '16px', overflowX: 'hidden' }}>
+              {getThemeNames().map((themeName, index) => (
+                <div 
+                  key={index}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    marginBottom: '8px',
+                    padding: '4px 8px',
+                    backgroundColor: selectedThemeIndex === index ? currentTheme.selectionColor : 'transparent',
+                    color: selectedThemeIndex === index ? currentTheme.backgroundColor : currentTheme.textColor,
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    flexWrap: 'wrap'
+                  }}
+                >
+                  <span style={{ fontSize: '14px', wordBreak: 'break-all' }}>{themeName}</span>
+                  {selectedThemeIndex === index && (
+                    <span style={{ marginLeft: '8px', fontSize: '12px' }}>← Press Enter to select</span>
+                  )}
+                </div>
+              ))}
+            </div>
+            <div style={{ color: currentTheme.textColor, fontSize: '12px', marginTop: '8px', fontStyle: 'italic' }}>
+              Use ↑↓ arrows to navigate, Enter to select, Esc to exit
+            </div>
+          </div>
+        )}
         
-        <div className="terminal-input-container" style={{ display: 'flex', alignItems: 'center', position: 'relative', overflowX: 'hidden', flexWrap: 'wrap' }}>
-          <span className="terminal-prompt" style={{ color: '#00ff00', fontWeight: '600', flexShrink: '0' }}>terminal@yashkhivasara.dev:~$</span>
-          <span style={{ color: '#00ff00', fontSize: '14px', wordBreak: 'break-all' }}>{input}</span>
-          <span className="terminal-cursor" style={{ color: '#00ff00', animation: 'blink 1s infinite' }}>█</span>
-          <input
-            ref={inputRef}
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            onClick={handleClick}
-            style={{ 
-              backgroundColor: 'transparent',
-              border: 'none',
-              outline: 'none',
-              color: 'transparent',
-              fontFamily: 'IBM Plex Mono, monospace',
-              fontSize: '14px',
-              position: 'absolute',
-              left: '0',
-              top: '0',
-              width: '100%',
-              height: '100%',
-              caretColor: 'transparent',
-              zIndex: '1'
-            }}
-            autoComplete="off"
-            spellCheck={false}
-          />
-        </div>
+        {!showThemeSelector && !showSocials && (
+          <div className="terminal-input-container" style={{ display: 'flex', alignItems: 'center', position: 'relative', overflowX: 'hidden', flexWrap: 'wrap' }}>
+            <span className="terminal-prompt" style={{ color: currentTheme.promptColor, fontWeight: '600', flexShrink: '0' }}>terminal@yashkhivasara.dev:~$</span>
+            <span style={{ color: currentTheme.textColor, fontSize: '14px', wordBreak: 'break-all' }}>{currentInput}</span>
+            <span className="terminal-cursor" style={{ color: currentTheme.cursorColor, animation: 'blink 1s infinite' }}>█</span>
+            <input
+              ref={inputRef}
+              type="text"
+              value={currentInput}
+              onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
+              onClick={handleClick}
+              style={{ 
+                backgroundColor: 'transparent',
+                border: 'none',
+                outline: 'none',
+                color: 'transparent',
+                fontFamily: 'IBM Plex Mono, monospace',
+                fontSize: '14px',
+                position: 'absolute',
+                left: '0',
+                top: '0',
+                width: '100%',
+                height: '100%',
+                caretColor: 'transparent',
+                zIndex: '1'
+              }}
+              autoComplete="off"
+              spellCheck={false}
+            />
+          </div>
+        )}
       </div>
       
       <style jsx>{`
