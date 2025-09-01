@@ -13,6 +13,7 @@ import {
   setTheme,
   navigateHistoryUp,
   navigateHistoryDown,
+  Command,
 } from '@/features/terminal/terminalSlice';
 import { executeCommand } from '@/lib/commands';
 import { getCurrentTheme, getThemeNames } from '@/lib/themes';
@@ -20,7 +21,7 @@ import { getCurrentTheme, getThemeNames } from '@/lib/themes';
 const availableCommands = [
   'help', 'about', 'skills', 'projects', 'experience', 
   'contact', 'resume', 'blog', 'socials', 'themes', 
-  'ai-chat', 'clear', 'whoami'
+  'ai-chat', 'clear', 'gui'
 ];
 
 export function Terminal() {
@@ -331,7 +332,7 @@ export function Terminal() {
       </div>
       
       <div className="terminal-output-container" style={{ overflowX: 'hidden', wordWrap: 'break-word' }}>
-        {commands.map((cmd, index) => (
+        {commands.map((cmd: Command, index: number) => (
           <div key={index} style={{ marginBottom: '16px', overflowX: 'hidden' }}>
             <div style={{ display: 'flex', alignItems: 'flex-start', marginBottom: '8px', flexWrap: 'wrap', overflowX: 'hidden' }}>
               <span style={{ color: currentTheme.promptColor, marginRight: '8px', fontWeight: '600', flexShrink: '0' }}>terminal@yashkhivasara.dev:~$</span>
@@ -425,7 +426,7 @@ export function Terminal() {
         
         {!showThemeSelector && !showSocials && (
           <div className="terminal-input-container" style={{ display: 'flex', alignItems: 'center', position: 'relative', overflowX: 'hidden', flexWrap: 'wrap' }}>
-            <span className="terminal-prompt" style={{ color: currentTheme.promptColor, fontWeight: '600', flexShrink: '0' }}>terminal@yashkhivasara.dev:~$</span>
+            <span className="terminal-prompt" style={{ color: currentTheme.promptColor, fontWeight: '600', flexShrink: '0' }}>terminal@yashkhivasara.dev:~$ </span>
             <span style={{ color: currentTheme.textColor, fontSize: '14px', wordBreak: 'break-all' }}>{currentInput}</span>
             <span className="terminal-cursor" style={{ color: currentTheme.cursorColor, animation: 'blink 1s infinite' }}>█</span>
             <input

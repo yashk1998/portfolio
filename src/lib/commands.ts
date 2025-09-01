@@ -9,7 +9,7 @@ export interface CommandHandler {
 export const availableCommands = [
   'help', 'about', 'skills', 'projects', 'experience', 
   'contact', 'resume', 'blog', 'socials', 'themes', 
-  'ai-chat', 'clear', 'whoami'
+  'ai-chat', 'clear', 'gui'
 ];
 
 export const commandHandlers: Record<string, CommandHandler> = {
@@ -17,19 +17,19 @@ export const commandHandlers: Record<string, CommandHandler> = {
     execute: async () => {
       return `
 Available commands:
-• about     - Personal introduction
-• skills    - Technical skills and technologies
-• projects  - Showcase of projects
-• experience - Work history and timeline
-• contact   - Get in touch
-• resume    - Download resume
-• blog      - View blog posts
-• socials   - Social media links
-• themes    - Change terminal theme
-• ai-chat   - AI assistant
-• clear     - Clear terminal
-• help      - Show this help
-• whoami    - Show current user
+• about       - Personal introduction
+• skills      - Technical skills and technologies
+• projects    - Showcase of projects
+• experience  - Work history and timeline
+• contact     - Get in touch
+• resume      - Download resume
+• blog        - View blog posts
+• socials     - Social media links
+• themes      - Change terminal theme
+• ai-chat     - AI assistant
+• clear       - Clear terminal
+• help        - Show this help
+• gui         - Switch to GUI portfolio
 
 Type any command to get started!
       `.trim();
@@ -171,19 +171,16 @@ Visit: yashkhivasara.ghost.org for full articles
     description: 'Clear terminal',
   },
 
-  whoami: {
+  gui: {
     execute: async () => {
-      // Check if we're in a browser environment
+      // Redirect to the main GUI portfolio
       if (typeof window !== 'undefined') {
-        // In browser, we can't get the actual IP, so we'll return visitor
-        // In a real implementation, you'd need server-side logic to get the actual IP
-        return 'visitor';
+        window.location.href = '/';
+        return 'Redirecting to GUI portfolio...';
       }
-      
-      // For server-side or when IP detection is available
-      return 'visitor';
+      return 'GUI portfolio: /';
     },
-    description: 'Show current user',
+    description: 'Switch to GUI portfolio',
   },
 };
 
