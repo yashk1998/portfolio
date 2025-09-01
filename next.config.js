@@ -16,7 +16,7 @@ const nextConfig = {
     optimizePackageImports: ['react-redux'],
   },
   
-  // Output optimizations (remove standalone for dev performance)
+  // Output optimizations
   // output: 'standalone',
   
   // Image optimizations
