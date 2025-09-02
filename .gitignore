@@ -32,6 +32,23 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env
+.env.local
+.env.development
+.env.production
+!.env.example
+
+# test files
+test.py
+*.test.js
+*.test.ts
+*.spec.js
+*.spec.ts
+
+# temporary files
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
 
 # vercel
 .vercel

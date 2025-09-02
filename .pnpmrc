@@ -1,0 +1,9 @@
+﻿# PNPM Configuration for faster installs
+auto-install-peers=true
+prefer-offline=true
+network-timeout=300000
+fetch-retries=5
+fetch-retry-mintimeout=10000
+fetch-retry-maxtimeout=60000
+registry=https://registry.npmjs.org/
+resolution-mode=highest

@@ -1,4 +1,4 @@
-import { openai } from '@ai-sdk/openai';
+import { azure } from '@ai-sdk/azure';
 import { streamText } from 'ai';
 import { SYSTEM_PROMPT } from './prompt';
 import { getContact } from './tools/getContact';
@@ -45,7 +45,7 @@ export async function POST(req: Request) {
     };
 
     const result = streamText({
-      model: openai('gpt-4o-mini'),
+      model: azure(process.env.AZURE_OPENAI_DEPLOYMENT_NAME || 'gpt-4o'),
       messages,
       toolCallStreaming: true,
       tools,

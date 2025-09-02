@@ -90,7 +90,7 @@ const PROJECT_CONTENT = [
       },
       {
         name: 'github',
-        url: 'https://github.com/toukoum/Rrate',
+        url: 'https://github.com/yashkhivasara/Rrate',
       },
     ],
     images: [
@@ -127,7 +127,7 @@ const PROJECT_CONTENT = [
       },
       {
         name: 'github',
-        url: 'https://github.com/toukoum/DEFAI',
+        url: 'https://github.com/yashkhivasara/DEFAI',
       },
       {
         name: 'LinkedIn',
@@ -135,7 +135,7 @@ const PROJECT_CONTENT = [
       },
       {
         name: 'Youtube Video',
-        url: 'https://www.youtube.com/watch?v=N9O7los4-ng&t=34s&ab_channel=Toukoum',
+        url: 'https://www.youtube.com/watch?v=N9O7los4-ng&t=34s&ab_channel=YashKhivasara',
       }
     ],
     images: [
@@ -166,7 +166,7 @@ const PROJECT_CONTENT = [
     links: [
       {
         name: 'Linkedin',
-        url: 'https://www.linkedin.com/posts/raphael-giraud-60939519a_hackathon-innovation-sporttech-activity-7210399263774674946-qSXq?utm_source=social_share_send&utm_medium=member_desktop_web&rcm=ACoAAC6vwikBVSEkS7XWktWS7y6GR3GHwAlKslc',
+        url: 'https://www.linkedin.com/posts/yash-khivasara_hackathon-innovation-sporttech-activity-7210399263774674946-qSXq?utm_source=social_share_send&utm_medium=member_desktop_web&rcm=ACoAAC6vwikBVSEkS7XWktWS7y6GR3GHwAlKslc',
       },
     ],
     images: [
@@ -195,7 +195,7 @@ const PROJECT_CONTENT = [
     links: [
       {
         name: 'GitHub',
-        url: 'https://github.com/toukoum/datai',
+        url: 'https://github.com/yashkhivasara/datai',
       },
       {
         name: 'Youtube Video Demo',
@@ -230,7 +230,7 @@ const PROJECT_CONTENT = [
     links: [
       {
         name: 'GitHub',
-        url: 'https://github.com/toukoum/Transcendance',
+        url: 'https://github.com/yashkhivasara/Transcendance',
       },
     ],
     images: [
@@ -270,7 +270,7 @@ const PROJECT_CONTENT = [
     links: [
       {
         name: 'GitHub',
-        url: 'https://github.com/toukoum/Michelle-42',
+        url: 'https://github.com/yashkhivasara/Michelle-42',
       },
     ],
     images: [
@@ -293,7 +293,7 @@ const PROJECT_CONTENT = [
       },
       {
         name: 'GitHub',
-        url: 'https://github.com/toukoum/YouBot',
+        url: 'https://github.com/yashkhivasara/YouBot',
       }
     ],
     images: [
@@ -316,11 +316,11 @@ const PROJECT_CONTENT = [
     links: [
       {
         name: 'Website',
-        url: 'https://toukoum.github.io/oldPortfolio/',
+        url: 'https://yashkhivasara.github.io/oldPortfolio/',
       },
       {
         name: 'GitHub',
-        url: 'https://github.com/toukoum/portfolio',
+        url: 'https://github.com/yashk1998/portfolio',
       },
     ],
     images: [

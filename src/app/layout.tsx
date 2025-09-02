@@ -13,10 +13,10 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Toukoum Portfolio",
+  title: "Yash Khivasara Portfolio",
   description: "Interactive portfolio with an AI-powered Memoji that answers questions about me, my skills, and my experience",
   keywords: [
-    "Toukoum", 
+    "Yash Khivasara", 
     "Portfolio", 
     "Developer", 
     "AI", 
@@ -29,24 +29,24 @@ export const metadata: Metadata = {
   ],
   authors: [
     {
-      name: "Toukoum",
-      url: "https://toukoum.fr",
+      name: "Yash Khivasara",
+      url: "https://yashkhivasara.fr",
     },
   ],
-  creator: "Toukoum",
+  creator: "Yash Khivasara",
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://toukoum.fr",
-    title: "Toukoum Portfolio",
+    url: "https://yashkhivasara.fr",
+    title: "Yash Khivasara Portfolio",
     description: "Interactive portfolio with an AI-powered Memoji that answers questions about me",
-    siteName: "Toukoum Portfolio",
+    siteName: "Yash Khivasara Portfolio",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Toukoum Portfolio",
+    title: "Yash Khivasara Portfolio",
     description: "Interactive portfolio with an AI-powered Memoji that answers questions about me",
-    creator: "@toukoum",
+    creator: "@yashkhivasara",
   },
   icons: {
     icon: [

@@ -29,7 +29,7 @@ Want to run this project locally? Here's what you need:
 ### Prerequisites
 - **Node.js** (v18 or higher)
 - **pnpm** package manager
-- **OpenAI API token** (for AI chat functionality)
+- **Azure OpenAI credentials** (for AI chat functionality)
 - **GitHub token** (for GitHub integration features)
 
 ### Setup
@@ -47,7 +47,13 @@ Want to run this project locally? Here's what you need:
 3. **Environment variables**
    Create a `.env` file in the root directory:
    ```env
-   OPENAI_API_KEY=your_openai_api_key_here
+   # Azure OpenAI Configuration
+   AZURE_RESOURCE_NAME=yash-m3j02ah5-eastus2
+   AZURE_API_KEY=your_azure_openai_api_key
+   AZURE_OPENAI_DEPLOYMENT_NAME=gpt-4o
+   AZURE_OPENAI_API_VERSION=2025-01-01-preview
+   
+   # GitHub Integration
    GITHUB_TOKEN=your_github_token_here
    ```
 
@@ -59,8 +65,11 @@ Want to run this project locally? Here's what you need:
 5. **Open your browser**
    Navigate to `http://localhost:3000`
 
-### Getting your **tokens**
-- **OpenAI API Key**: Get it from [platform.openai.com](https://platform.openai.com/api-keys)
+### Getting your **credentials**
+- **Azure OpenAI**: 
+  - Create an Azure OpenAI resource in the [Azure Portal](https://portal.azure.com)
+  - Get your resource name, API key, and deployment name from the Azure OpenAI service
+  - Create a model deployment (e.g., GPT-4o-mini) and note the deployment name
 - **GitHub Token**: Generate one at [github.com/settings/tokens](https://github.com/settings/personal-access-tokens) with repo access
 
 
